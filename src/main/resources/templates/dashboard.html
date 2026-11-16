@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments :: head('Dashboard')}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main>
+	<h1 th:text="'Welcome, ' + ${me.fullName}">Welcome</h1>
+	<div th:replace="~{fragments :: flash}"></div>
+
+	<h2>My job postings</h2>
+	<p class="muted" th:if="${myJobs.isEmpty()}">You have not posted anything yet. <a th:href="@{/jobs/new}">Post a job</a></p>
+	<ul class="cards">
+		<li th:each="job : ${myJobs}" class="card">
+			<h3><a th:href="@{/jobs/{id}(id=${job.id})}" th:text="${job.title}">Title</a></h3>
+			<p class="muted" th:text="${job.applications.size()} + ' application(s)'">0 applications</p>
+		</li>
+	</ul>
+
+	<h2>My applications</h2>
+	<p class="muted" th:if="${myApplications.isEmpty()}">You have not applied to any job yet.</p>
+	<ul class="cards">
+		<li th:each="a : ${myApplications}" class="card">
+			<h3><a th:href="@{/jobs/{id}(id=${a.job.id})}" th:text="${a.job.title}">Title</a></h3>
+			<p class="muted" th:text="${a.job.company} + ' · sent ' + ${#temporals.format(a.createdAt, 'dd.MM.yyyy')}">Company</p>
+		</li>
+	</ul>
+</main>
+</body>
+</html>

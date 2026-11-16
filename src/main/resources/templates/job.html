@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments :: head(${job.title})}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="narrow">
+	<div th:replace="~{fragments :: flash}"></div>
+	<h1 th:text="${job.title}">Title</h1>
+	<p class="meta">
+		<span th:text="${job.company}">Company</span> ·
+		<span th:text="${job.location}">Location</span> ·
+		<span class="tag" th:text="${job.type.label}">Type</span>
+	</p>
+	<p class="muted" th:text="'Posted by ' + ${job.owner.fullName} + ' on ' + ${#temporals.format(job.postedAt, 'dd.MM.yyyy')}">Posted</p>
+	<p class="description" th:text="${job.description}">Description</p>
+
+	<section th:if="${currentUsername == null}" class="panel">
+		<p><a th:href="@{/login}">Log in</a> or <a th:href="@{/register}">create an account</a> to apply.</p>
+	</section>
+
+	<section th:if="${currentUsername != null and !isOwner}" class="panel">
+		<p th:if="${alreadyApplied}" class="muted">You already applied to this job.</p>
+		<form th:unless="${alreadyApplied}" th:action="@{/jobs/{id}/apply(id=${job.id})}" method="post">
+			<label for="message">Your message</label>
+			<textarea id="message" name="message" rows="5" maxlength="2000" required></textarea>
+			<button type="submit" class="btn">Apply</button>
+		</form>
+	</section>
+
+	<section th:if="${isOwner}" class="panel">
+		<h2>Applications received</h2>
+		<p class="muted" th:if="${received.isEmpty()}">No applications yet.</p>
+		<ul class="plain">
+			<li th:each="a : ${received}">
+				<strong th:text="${a.applicant.fullName}">Name</strong>
+				(<span th:text="${a.applicant.email}">mail</span>)
+				<span class="muted" th:text="${#temporals.format(a.createdAt, 'dd.MM.yyyy')}">date</span>
+				<p th:text="${a.message}">Message</p>
+			</li>
+		</ul>
+		<form th:action="@{/jobs/{id}/delete(id=${job.id})}" method="post">
+			<button type="submit" class="btn danger">Delete this job</button>
+		</form>
+	</section>
+</main>
+</body>
+</html>

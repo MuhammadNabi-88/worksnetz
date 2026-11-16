@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments :: head('Post a job')}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main class="narrow">
+	<h1>Post a job</h1>
+	<form th:action="@{/jobs}" th:object="${form}" method="post">
+		<label for="title">Title</label>
+		<input id="title" type="text" th:field="*{title}">
+		<p class="field-error" th:if="${#fields.hasErrors('title')}" th:errors="*{title}"></p>
+
+		<label for="company">Company</label>
+		<input id="company" type="text" th:field="*{company}">
+		<p class="field-error" th:if="${#fields.hasErrors('company')}" th:errors="*{company}"></p>
+
+		<label for="location">Location</label>
+		<input id="location" type="text" th:field="*{location}">
+		<p class="field-error" th:if="${#fields.hasErrors('location')}" th:errors="*{location}"></p>
+
+		<label for="type">Type</label>
+		<select id="type" th:field="*{type}">
+			<option th:each="t : ${types}" th:value="${t}" th:text="${t.label}">Type</option>
+		</select>
+
+		<label for="description">Description</label>
+		<textarea id="description" rows="8" th:field="*{description}"></textarea>
+		<p class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+
+		<button type="submit" class="btn">Publish</button>
+	</form>
+</main>
+</body>
+</html>

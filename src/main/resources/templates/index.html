@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head th:replace="~{fragments :: head('Jobs')}"></head>
+<body>
+<header th:replace="~{fragments :: nav}"></header>
+<main>
+	<section class="hero">
+		<h1>Find your next project or team.</h1>
+		<form th:action="@{/}" method="get" class="search">
+			<input type="search" name="q" th:value="${q}" placeholder="Search by title or company" aria-label="Search jobs">
+			<button type="submit" class="btn">Search</button>
+		</form>
+	</section>
+	<div th:replace="~{fragments :: flash}"></div>
+	<p class="muted" th:if="${jobs.isEmpty()}">No jobs found.</p>
+	<ul class="cards">
+		<li th:each="job : ${jobs}" class="card">
+			<h2><a th:href="@{/jobs/{id}(id=${job.id})}" th:text="${job.title}">Title</a></h2>
+			<p class="meta">
+				<span th:text="${job.company}">Company</span> ·
+				<span th:text="${job.location}">Location</span> ·
+				<span class="tag" th:text="${job.type.label}">Type</span>
+			</p>
+			<p class="muted" th:text="'Posted ' + ${#temporals.format(job.postedAt, 'dd.MM.yyyy')}">Posted</p>
+		</li>
+	</ul>
+</main>
+</body>
+</html>
